@@ -1,5 +1,6 @@
 <div align="center">
   <h1>Análise do Aumento do Número de Sinistros Associados a Doenças Crônicas</h1>
+  <p> Projeto 6 - Eletivo em Python - Certificação em Análise de Dados da Laboratória em parceria com a IBM. </p>
 
   :construction: Projeto em Construção :construction:
 </div>
