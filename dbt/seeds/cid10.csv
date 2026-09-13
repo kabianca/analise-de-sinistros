@@ -1,0 +1,22 @@
+diagnosis_code,description,chapter,chronic_group
+I10X,Hipertensao essencial (primaria),IX,HTA
+I119,Doenca cardiaca hipertensiva sem insuficiencia cardiaca,IX,HTA
+I159,Hipertensao secundaria nao especificada,IX,HTA
+E119,Diabetes mellitus tipo 2 sem complicacoes,IV,DM
+E116,Diabetes mellitus tipo 2 com outras complicacoes,IV,DM
+E109,Diabetes mellitus tipo 1 sem complicacoes,IV,DM
+E149,Diabetes mellitus nao especificado sem complicacoes,IV,DM
+J069,Infeccao aguda das vias aereas superiores nao especificada,X,
+J459,Asma nao especificada,X,
+M545,Dor lombar baixa,XIII,
+M791,Mialgia,XIII,
+K297,Gastrite nao especificada,XI,
+K802,Calculose da vesicula biliar sem colecistite,XI,
+N390,Infeccao do trato urinario de localizacao nao especificada,XIV,
+Z000,Exame medico geral,XXI,
+R51X,Cefaleia,XVIII,
+A09X,Diarreia e gastroenterite de origem infecciosa presumivel,I,
+H524,Presbiopia,VII,
+L309,Dermatite nao especificada,XII,
+I209,Angina pectoris nao especificada,IX,
+S525,Fratura da extremidade distal do radio,XIX,
