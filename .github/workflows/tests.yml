@@ -1,0 +1,62 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pytest:
+    name: pytest (dbt-core 1.12 · dbt-postgres 1.11 · Postgres 16)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: docker/setup-buildx-action@v4
+
+      # The suite runs inside the same image `make build` produces and
+      # against the same Postgres service the compose file starts, so the
+      # badge asserts what a clone gets. Layers are cached between runs.
+      - name: Build the image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          load: true
+          tags: estrato:local
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Versions inside the image
+        run: |
+          docker run --rm estrato:local sh -c '
+            python --version
+            pip list 2>/dev/null | grep -Ei "^(dbt-core|dbt-postgres|psycopg2-binary|numpy) "'
+
+      # The container runs as UID 1000; the runner is not. The bind-mounted
+      # data/ and dbt/target must be writable by both, or a run fails on
+      # permissions instead of on its assertion.
+      - name: Prepare the bind mounts
+        run: mkdir -p data dbt/target dbt/logs && chmod -R a+rwx data dbt/target dbt/logs
+
+      - name: Start Postgres
+        run: make db
+
+      - name: Lint
+        run: make lint
+
+      - name: Test suite
+        run: make test
+
+      - name: Stop Postgres
+        if: always()
+        run: make down
