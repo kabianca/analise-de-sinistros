@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "estrato"
+version = "0.1.0"
+description = "Health-insurance claims as a dimensional model with SCD Type 2 history: dbt, Postgres, a synthetic source that changes over time"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [{ name = "Karla Oliveira" }]
+
+# dbt-core and dbt-postgres are released on separate cadences; the adapter
+# declares which core versions it accepts (dbt-postgres 1.11 accepts
+# core >=1.8,<2.0). This pairing was checked against PyPI on 2026-09-13.
+# psycopg2 is what the adapter already pulls in; it is declared here because
+# the loader and the fingerprint import it directly.
+dependencies = [
+    "dbt-core==1.12.4",
+    "dbt-postgres==1.11.0",
+    "psycopg2-binary>=2.9,<3.0",
+    "numpy>=2.0",
+    "matplotlib>=3.9",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.6"]
+
+[tool.setuptools.packages.find]
+include = ["estrato*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+# ruff formats Python blocks inside Markdown. The README quotes the legacy
+# notebook verbatim; that is a quotation, not code to be tidied.
+extend-exclude = ["*.md", "legacy"]
