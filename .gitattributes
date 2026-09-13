@@ -1,1 +1,4 @@
-*.ipynb linguist-language=Python
+# The legacy notebook is kept for the record; keep its 4.6 MB of JSON (most
+# of it embedded Plotly output) out of the language statistics so they
+# reflect the current code.
+legacy/** linguist-vendored
