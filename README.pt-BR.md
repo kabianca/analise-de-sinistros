@@ -8,13 +8,13 @@ muda ao longo do tempo e uma suíte de testes que cobra do warehouse a
 verdade de onde a fonte foi recortada.
 
 <p>
-  <a href="https://github.com/kabianca/analise-de-sinistros/actions/workflows/tests.yml">
-    <img src="https://github.com/kabianca/analise-de-sinistros/actions/workflows/tests.yml/badge.svg" alt="tests">
+  <a href="https://github.com/kabianca/estrato-claims-warehouse/actions/workflows/tests.yml">
+    <img src="https://github.com/kabianca/estrato-claims-warehouse/actions/workflows/tests.yml/badge.svg" alt="tests">
   </a>
   <img src="https://img.shields.io/badge/dbt-1.12-FF694B?logo=dbt&logoColor=white" alt="dbt 1.12">
   <img src="https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white" alt="PostgreSQL 16">
   <img src="https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white" alt="Python 3.12">
-  <img src="https://img.shields.io/badge/license-MIT-green" alt="MIT license">
+  <img src="https://img.shields.io/badge/license-GPL--3.0-green" alt="GPL-3.0 license">
 </p>
 
 [English](README.md) · **Português**
