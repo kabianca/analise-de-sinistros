@@ -1,0 +1,34 @@
+name: estrato
+version: "0.1.0"
+profile: estrato
+
+model-paths: ["models"]
+snapshot-paths: ["snapshots"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+test-paths: ["tests"]
+
+target-path: target
+clean-targets: [target, dbt_packages]
+
+# `as_of` is the extract date being replayed. Left unset, every model reads
+# the latest extract, which is what an ad-hoc `dbt build` should do.
+vars:
+  as_of: null
+
+models:
+  estrato:
+    staging:
+      +schema: staging
+      +materialized: view
+    marts:
+      +schema: marts
+      +materialized: table
+
+snapshots:
+  estrato:
+    +schema: snapshots
+
+seeds:
+  estrato:
+    +schema: marts

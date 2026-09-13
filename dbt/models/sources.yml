@@ -1,0 +1,31 @@
+version: 2
+
+sources:
+  - name: raw
+    description: >
+      The loader's copy of what the source system sent, one row per row
+      received, every column text. Every extract is kept, so history can be
+      replayed from the database alone.
+    schema: raw
+    tables:
+      - name: segurados_extract
+        description: The insured table as it stood at the end of each extract_date.
+        columns:
+          - name: extract_date
+            tests: [not_null]
+          - name: num_afiliado
+            tests: [not_null]
+      - name: apolices_extract
+        description: The policy table as it stood at the end of each extract_date.
+        columns:
+          - name: extract_date
+            tests: [not_null]
+          - name: cod_apolice
+            tests: [not_null]
+      - name: sinistros
+        description: >
+          Claims as received, one file per month of reception. Rows the
+          source sent twice are here twice; staging keeps the first.
+        columns:
+          - name: row_no
+            tests: [unique, not_null]

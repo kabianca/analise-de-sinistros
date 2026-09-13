@@ -1,0 +1,46 @@
+services:
+  postgres:
+    image: postgres:16.15-trixie
+    # libpq variable names on purpose: psql inside this container, psycopg2 in
+    # the estrato container and dbt's profiles.yml all read the same five.
+    environment:
+      POSTGRES_USER: estrato
+      POSTGRES_PASSWORD: estrato
+      POSTGRES_DB: estrato
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U estrato -d estrato"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  estrato:
+    build: .
+    image: estrato:local
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PGHOST: postgres
+      PGPORT: "5432"
+      PGUSER: estrato
+      PGPASSWORD: estrato
+      PGDATABASE: estrato
+      ESTRATO_DATA_DIR: /app/data
+    # The source tree is mounted over the editable install so a change on the
+    # host is live in the container without a rebuild. ./data holds the
+    # generated extracts and is never committed.
+    volumes:
+      - ./estrato:/app/estrato
+      - ./dbt:/app/dbt
+      - ./tests:/app/tests
+      - ./docs:/app/docs
+      - ./data:/app/data
+      # Lint reads its config from the working tree, not from the copy baked
+      # into the image at build time, or `make lint` passes locally on a
+      # stale image and fails in CI on a fresh one.
+      - ./pyproject.toml:/app/pyproject.toml:ro
+
+volumes:
+  pgdata:

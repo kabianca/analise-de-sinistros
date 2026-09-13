@@ -1,0 +1,39 @@
+version: 2
+
+models:
+  - name: stg_insured
+    columns:
+      - name: insured_id
+        tests: [not_null]
+      - name: updated_at
+        tests: [not_null]
+      - name: sex
+        tests:
+          - accepted_values: { values: ["M", "F"] }
+      - name: region
+        tests:
+          - accepted_values: { values: ["L", "P", "N"] }
+
+  - name: stg_policy
+    columns:
+      - name: policy_id
+        tests: [not_null]
+      - name: insured_id
+        tests: [not_null]
+      - name: product
+        tests:
+          - accepted_values: { values: ["EPS", "AMC", "AMI"] }
+
+  - name: stg_claim
+    description: Deduplicated claims, every reception month.
+    columns:
+      - name: claim_id
+        tests: [unique, not_null]
+      - name: occurrence_date
+        tests: [not_null]
+      - name: reception_date
+        tests: [not_null]
+      - name: submitted_amount
+        tests: [not_null]
+      - name: paid_amount
+        tests: [not_null]

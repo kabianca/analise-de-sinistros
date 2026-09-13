@@ -1,0 +1,96 @@
+version: 2
+
+models:
+  - name: dim_insured
+    description: >
+      One row per version of an insured (SCD Type 2). A claim joins the
+      version in force on its occurrence day; the current one is is_current.
+    columns:
+      - name: insured_sk
+        description: Surrogate key of the version; stable across replays.
+        tests: [unique, not_null]
+      - name: insured_id
+        description: Business key from the source (num_afiliado).
+        tests:
+          - not_null
+          - scd2_contiguous: { valid_from: valid_from, valid_to: valid_to }
+          - one_current_per_key: { valid_to: valid_to }
+      - name: valid_from
+        tests: [not_null]
+      - name: region
+        tests:
+          - accepted_values: { values: ["L", "P", "N"] }
+
+  - name: dim_policy
+    columns:
+      - name: policy_sk
+        tests: [unique, not_null]
+      - name: policy_id
+        tests:
+          - not_null
+          - scd2_contiguous: { valid_from: valid_from, valid_to: valid_to }
+          - one_current_per_key: { valid_to: valid_to }
+      - name: insured_id
+        tests: [not_null]
+      - name: product
+        tests:
+          - accepted_values: { values: ["EPS", "AMC", "AMI"] }
+
+  - name: dim_diagnosis
+    columns:
+      - name: diagnosis_code
+        tests: [unique, not_null]
+
+  - name: dim_date
+    columns:
+      - name: date_key
+        tests: [unique, not_null]
+      - name: full_date
+        tests: [unique, not_null]
+
+  - name: fct_claim
+    description: One row per claim, pointing at the versions in force when it happened.
+    columns:
+      - name: claim_id
+        tests: [unique, not_null]
+      - name: insured_sk
+        tests:
+          - not_null
+          - relationships: { to: ref('dim_insured'), field: insured_sk }
+      - name: policy_sk
+        tests:
+          - not_null
+          - relationships: { to: ref('dim_policy'), field: policy_sk }
+      - name: diagnosis_code
+        tests:
+          - not_null
+          - relationships: { to: ref('dim_diagnosis'), field: diagnosis_code }
+      - name: occurrence_date_key
+        tests:
+          - relationships: { to: ref('dim_date'), field: date_key }
+      - name: reception_date_key
+        tests:
+          - relationships: { to: ref('dim_date'), field: date_key }
+      - name: benefit_group
+        tests:
+          - accepted_values:
+              values: ["PROGRAMAS CRONICOS", "AMBULATORIO", "HOSPITALARIO", "FARMACIA"]
+      - name: submitted_amount
+        tests: [not_null]
+      - name: paid_amount
+        tests: [not_null]
+
+  - name: quarantine_claim
+    description: Staged claims the fact could not attribute, each with a reason.
+    columns:
+      - name: claim_id
+        tests: [unique, not_null]
+      - name: reason
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - unknown_insured
+                - insured_cancelled
+                - no_version_at_occurrence
+                - no_policy_version_at_occurrence

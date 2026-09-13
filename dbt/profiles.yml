@@ -1,0 +1,14 @@
+# Checked in on purpose: the only secrets are the compose defaults, and the
+# five values come from the same libpq variables psycopg2 and psql read.
+estrato:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: "{{ env_var('PGHOST', 'localhost') }}"
+      port: "{{ env_var('PGPORT', '5432') | int }}"
+      user: "{{ env_var('PGUSER', 'estrato') }}"
+      password: "{{ env_var('PGPASSWORD', 'estrato') }}"
+      dbname: "{{ env_var('PGDATABASE', 'estrato') }}"
+      schema: marts
+      threads: 4
